@@ -7,14 +7,17 @@ int main() {
     DWORD dwValue = 0;
     const char* regPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System";
 
-    // Open the registry key
+    // Check if the program has permission to edit the registry
     lResult = RegOpenKeyEx(HKEY_LOCAL_MACHINE, 
                            regPath, 
                            0, 
-                           KEY_SET_VALUE, 
+                           KEY_WRITE, 
                            &hKey);
 
-    if (lResult != ERROR_SUCCESS) {
+    if (lResult == ERROR_ACCESS_DENIED) {
+        printf("Permission denied. Please run the program as an administrator.\n");
+        return 1;
+    } else if (lResult != ERROR_SUCCESS) {
         printf("Error opening registry key: %ld\n", lResult);
         return 1;
     }
